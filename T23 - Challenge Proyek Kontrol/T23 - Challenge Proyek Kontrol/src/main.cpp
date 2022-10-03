@@ -26,6 +26,7 @@ void setup() {
   pinMode(pinPB2, INPUT_PULLUP);
   pinMode(pinBZ, OUTPUT);
   pinMode(pinRLY, OUTPUT);
+  digitalWrite(pinRLY, LOW);
 }
 
 void loop() {
@@ -72,15 +73,16 @@ void loop() {
 
   if (statsBT1 == LOW && statsBT2 == LOW)
   {
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 4; i++)
     {
-      digitalWrite(pinRLY, HIGH);
       digitalWrite(pinLED[i], HIGH);
       tone(pinBZ, 1000);
+      digitalWrite(pinRLY, HIGH);
       delay(1000);
-      digitalWrite(pinRLY, LOW);
       digitalWrite(pinLED[i], LOW);
       noTone(pinBZ);
+      digitalWrite(pinRLY, LOW);
+      delay(1000);
     }
   } else
   {
