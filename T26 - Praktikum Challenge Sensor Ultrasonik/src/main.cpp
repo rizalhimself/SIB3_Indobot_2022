@@ -44,7 +44,16 @@ void loop()
   Serial.print(jarak);
   Serial.println(" cm");
   delay(500);
-  if (jarak >= 5)
+  
+  if (jarak >= 4 && jarak <= 5)
+  {
+    digitalWrite(pinLedH, HIGH);
+    tone(pinBuzzer, 700);
+    delay(250);
+    digitalWrite(pinLedH, LOW);
+    noTone(pinBuzzer);
+    delay(250);
+  } else if (jarak > 5)
   {
     digitalWrite(pinLedH, HIGH);
   }
@@ -53,7 +62,7 @@ void loop()
     digitalWrite(pinLedH, LOW);
   }
 
-  if (jarak >= 9 && jarak <= 11)
+  if (jarak >= 9 && jarak <= 10)
   {
     digitalWrite(pinLedK, HIGH);
     tone(pinBuzzer, 800);
@@ -62,7 +71,7 @@ void loop()
     noTone(pinBuzzer);
     delay(250);
   }
-  else if (jarak > 11)
+  else if (jarak > 10)
   {
     digitalWrite(pinLedK, HIGH);
   }
