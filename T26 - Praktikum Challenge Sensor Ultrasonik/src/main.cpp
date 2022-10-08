@@ -5,6 +5,7 @@ const int pinBuzzer = D4;
 const int pinLedM = D5;
 const int pinLedK = D6;
 const int pinLedH = D7;
+int pinLED[] = {pinLedM, pinLedK, pinLedH};
 long durasi, jarak;
 unsigned long previousMillis;
 unsigned long previousMillisBz;
@@ -34,6 +35,18 @@ void setup()
   pinMode(pinLedM, OUTPUT);
   pinMode(pinLedK, OUTPUT);
   pinMode(pinLedH, OUTPUT);
+  Serial.println("Ultrasonic Measurement");
+  delay(1000);
+  Serial.println("Loading...");
+  for (int k = 0; k < 3; k++)
+  {
+    for (int i = 0; i <= 2; i++)
+    {
+      digitalWrite(pinLED[i], HIGH);
+      delay(400);
+      digitalWrite(pinLED[i], LOW);
+    }
+  }
 }
 
 void loop()
@@ -44,7 +57,7 @@ void loop()
   Serial.print(jarak);
   Serial.println(" cm");
   delay(500);
-  
+
   if (jarak >= 4 && jarak <= 5)
   {
     digitalWrite(pinLedH, HIGH);
@@ -53,7 +66,8 @@ void loop()
     digitalWrite(pinLedH, LOW);
     noTone(pinBuzzer);
     delay(250);
-  } else if (jarak > 5)
+  }
+  else if (jarak > 5)
   {
     digitalWrite(pinLedH, HIGH);
   }
