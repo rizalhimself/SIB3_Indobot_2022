@@ -28,9 +28,11 @@ void loop()
   if (valSensor >= 1000)
   {
     digitalWrite(pinLED, HIGH);
+    Serial.println("+++ Lampu Menyala! +++");
   }
   else
   {
     digitalWrite(pinLED, LOW);
+    Serial.println("+++ Lampu Mati! +++");
   }
 }
