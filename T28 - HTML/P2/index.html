@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Suhu dan Kelembapan Sensor DHT11</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</head>
+
+<style>
+    html {
+        font-family: Arial;
+        display: inline-block;
+        margin: 0px auto;
+        text-align: center;
+    }
+
+    header {
+        background-color: slategray;
+        padding: 30px;
+    }
+
+    h1 {
+        color: #ffebcd;
+        font-size: larger;
+    }
+
+    footer {
+        background-color: slategray;
+        padding: 10px;
+    }
+
+    p.sinyal {
+        color: burlywood;
+    }
+</style>
+
+<body>
+    <header>
+        <h1>Monitoring Suhu dan Kelembapan Sensor DHT11 dengan Web Server WeMos D1 R1</h1>
+        <p class="sinyal">
+            <i class="fas fa-signal"></i>
+            <span class="sigalRSSI">Sinyal Perangkat </span>
+            <span id="rssi">%RSSI%</span>
+            <sup class="units">db</sup>
+        </p>
+    </header>
+    <br>
+    <br>
+    <p>
+        <i class="fas fa-thermometer-half" style="color:#059e8a;"></i>
+        <span class="dht-labels">Suhu </span>
+        <span id="temperature">%TEMPERATURE</span>
+        <sup class="units">°C</sup>
+    </p>
+    <p>
+        <i class="fas fa-tint" style="color:#00add6;"></i>
+        <span class="dht-labels">Kelembapan </span>
+        <span id="humidity">%HUMIDITY%</span>
+        <sup class="units">%</sup>
+    </p>
+    <br>
+    <br>
+    <footer>
+        <div class="textFooter">
+            <b>Rizal Alfikri | SIB3_Wifi</b>
+        </div>
+    </footer>
+</body>
+<script>
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("rssi").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/rssi", true);
+        xhttp.send();
+    }, 10000);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("temperature").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/temperature", true);
+        xhttp.send();
+    }, 10000);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("humidity").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/humidity", true);
+    }, 10000);
+
+</script>
+
+</html>

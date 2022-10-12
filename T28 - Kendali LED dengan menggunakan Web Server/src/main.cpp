@@ -261,6 +261,9 @@ ESP8266WebServer server(80);
 
 const int led = 0;
 
+unsigned long waktuSebelum = 0;
+const long waktuJeda = 1000; 
+
 void returnFail(String msg){
   server.sendHeader("Connection","close");
   server.sendHeader("Access-Control-Allow-Origin","*");
@@ -339,16 +342,11 @@ void setup() {
 
   server.on("/", handleRoot);
 
-  server.on("/inline", [](){
-    server.send(200, "text/plain", "this works as well");
-  });
-
   server.on("/led_on",handle_on);
   server.on("/led_off", handle_off);
 
   server.begin();
   Serial.println("ESP8266 HTTP Server Dimulai");
-  
 }
 
 void loop() {
