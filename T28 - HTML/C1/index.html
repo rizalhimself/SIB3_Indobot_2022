@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontrol LED dengan Web Server</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</head>
+<style>
+    html {
+        font-family: Arial;
+        display: inline-block;
+        margin: 0px auto;
+        text-align: center;
+    }
+
+    header {
+        background-color: slategray;
+        padding: 30px;
+    }
+
+    h1 {
+        color: #ffebcd;
+        font-size: larger;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        display: none;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    footer {
+        background-color: slategray;
+        padding: 10px;
+    }
+
+    p.sinyal {
+        color: burlywood;
+    }
+</style>
+
+<body>
+    <header>
+        <h1>Kontrol LED dengan WeMos D1 R1 Web Server</h1>
+        <p class="sinyal">
+            <i class="fas fa-signal"></i>
+            <span class="sigalRSSI">Sinyal Perangkat </span>
+            <span id="rssi">%RSSI%</span>
+            <sup class="units">db</sup>
+        </p>
+
+    </header>
+    <br>
+    <br>
+    %BUTTONPLACEHOLDER%
+    <br>
+    <br>
+    <footer>
+        <div class="textFooter">
+            <b>Rizal Alfikri | SIB3_Wifi</b>
+        </div>
+    </footer>
+</body>
+<script>
+     setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("rssi").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/rssi", true);
+        xhttp.send();
+    }, 10000);
+
+    function tonggleCheckbox(element) {
+        var xhr = new XMLHttpRequest();
+        if (element.checked) {
+            xhr.open("GET","/update?output="+element.id+"&state=1",true);
+        } else {
+            xhr.open("GET","/update?output="+element.id+"&state=0",false);
+        }
+        xhr.send();
+    }
+</script>
+
+</html>
