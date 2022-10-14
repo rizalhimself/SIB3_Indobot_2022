@@ -11,6 +11,9 @@ const int pinLedBiru = D8;
 
 int r = 0;
 int blinkState = 0;
+int ledStateBefore = 0;
+String inputMessage1;
+String inputMessage2;
 
 unsigned long waktuSebelum = 0;
 const long interval = 5000;
@@ -164,7 +167,11 @@ const char index_html[] PROGMEM = R"rawliteral(
 
 String outputState(int output)
 {
-    if (digitalRead(output))
+    if (output == pinLedBiru && digitalRead(output))
+    {
+        return "checked";
+    }
+    else if (output == 2 && blinkState == 1)
     {
         return "checked";
     }
@@ -204,7 +211,6 @@ void setup()
         Serial.print("Mengoneksikan ke jaringan ");
         Serial.print(ssid);
         Serial.println(" ...");
-
     }
     Serial.println(WiFi.localIP());
 
@@ -213,19 +219,24 @@ void setup()
 
     server.on("/update", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-    String inputMessage1;
-    String inputMessage2;
     if (request->hasParam(parameterInput_1)&& request->hasParam(parameterInput_2))
     {
       inputMessage1 = request->getParam(parameterInput_1)->value();
       inputMessage2 = request->getParam(parameterInput_2)->value();
-      Serial.println(inputMessage1);
-      Serial.println(inputMessage2);
-      digitalWrite(inputMessage1.toInt(), inputMessage2.toInt());
-      if (inputMessage1 == "2" && inputMessage2 == "0")
+      if (inputMessage1 == String(pinLedBiru))
+      {
+        digitalWrite(inputMessage1.toInt(), inputMessage2.toInt());
+        Serial.print("Pin: ");
+        Serial.print(inputMessage1);
+        Serial.print("- Diset ke: ");
+        Serial.println(inputMessage2);
+        ledStateBefore = inputMessage2.toInt();
+      } 
+      else if (inputMessage1 == "2" && inputMessage2 == "0" && ledStateBefore == 1)
       {
         blinkState = 0;
-      } else if (inputMessage1 == "2" && inputMessage2 == "1")
+      } 
+      else if (inputMessage1 == "2" && inputMessage2 == "1" && ledStateBefore == 1)
       {
         blinkState = 1;
       }
@@ -235,10 +246,7 @@ void setup()
       inputMessage1 = "Tidak ada perintah dikirim!";
       inputMessage2 = "Tidak ada perintah dikirim!";
     }
-    Serial.print("Pin: ");
-    Serial.print(inputMessage1);
-    Serial.print("- Diset ke: ");
-    Serial.println(inputMessage2);
+    
     request->send(200, "text/plain", "OK"); });
 
     server.begin();
@@ -257,6 +265,11 @@ void loop()
             delay(100);
         }
     }
+    else if (blinkState == 0 && ledStateBefore == 1)
+    {
+        digitalWrite(pinLedBiru, HIGH);
+    }
+
     unsigned long waktuMillis = millis();
     if (waktuMillis - waktuSebelum >= interval)
     {
