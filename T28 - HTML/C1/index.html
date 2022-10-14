@@ -117,7 +117,7 @@
     </footer>
 </body>
 <script>
-     setInterval(function () {
+    setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -131,9 +131,9 @@
     function tonggleCheckbox(element) {
         var xhr = new XMLHttpRequest();
         if (element.checked) {
-            xhr.open("GET","/update?output="+element.id+"&state=1",true);
+            xhr.open("GET", "/update?output=" + element.id + "&state=1", true);
         } else {
-            xhr.open("GET","/update?output="+element.id+"&state=0",false);
+            xhr.open("GET", "/update?output=" + element.id + "&state=0", false);
         }
         xhr.send();
     }
