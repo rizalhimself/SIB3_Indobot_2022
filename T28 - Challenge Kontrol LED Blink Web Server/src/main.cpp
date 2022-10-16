@@ -7,7 +7,11 @@ const char *ssid = "vivo1820";
 const char *password = "sinta123";
 const char *parameterInput_1 = "output";
 const char *parameterInput_2 = "state";
-const int pinLedBiru = D8;
+const int pinLedBiru = D5;
+const int pinLedM = D2;
+const int pinLedK = D3;
+const int pinLedH = D4;
+int pinLED[] = {pinLedM, pinLedK, pinLedH};
 
 int r = 0;
 int blinkState = 0;
@@ -17,6 +21,8 @@ String inputMessage2;
 
 unsigned long waktuSebelum = 0;
 const long interval = 5000;
+unsigned long waktuSebelum2 = 0;
+const long interval2 = 1000;
 
 AsyncWebServer server(80);
 
@@ -186,8 +192,8 @@ String processor(const String &var)
     if (var == "BUTTONPLACEHOLDER")
     {
         String buttons = "";
-        buttons += "<h4>Saklar LED Biru</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"tonggleCheckbox(this)\" id=\"0\" " + outputState(pinLedBiru) + "><span class=\"slider\"></span></label>";
-        buttons += "<h4>Saklar Blink LED</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"tonggleCheckbox(this)\" id=\"2\" " + outputState(2) + "><span class=\"slider\"></span></label>";
+        buttons += "<h4>Saklar LED Biru</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"tonggleCheckbox(this)\" id=\"14\" " + outputState(pinLedBiru) + "><span class=\"slider\"round\"></span></label>";
+        buttons += "<h4>Saklar Blink LED</h4><label class=\"switch\"><input type=\"checkbox\" onchange=\"tonggleCheckbox(this)\" id=\"2\" " + outputState(2) + "><span class=\"slider\"round\"></span></label>";
         return buttons;
     }
     else if (var == "RSSI")
@@ -197,23 +203,41 @@ String processor(const String &var)
     return String();
 }
 
+void loadingLedAnim()
+{
+    for (int k = 0; k < 3; k++)
+    {
+        for (int i = 0; i <= 2; i++)
+        {
+            digitalWrite(pinLED[i], HIGH);
+            delay(400);
+            digitalWrite(pinLED[i], LOW);
+        }
+    }
+}
+
 void setup()
 {
     // put your setup code here, to run once:
     Serial.begin(115200);
     pinMode(pinLedBiru, OUTPUT);
+    pinMode(pinLedM, OUTPUT);
+    pinMode(pinLedH, OUTPUT);
+    pinMode(pinLedK, OUTPUT);
     digitalWrite(pinLedBiru, LOW);
 
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(1000);
+        loadingLedAnim();
         Serial.print("Mengoneksikan ke jaringan ");
         Serial.print(ssid);
         Serial.println(" ...");
     }
     Serial.println(WiFi.localIP());
-
+    WiFi.setAutoReconnect(true);
+    WiFi.persistent(true);
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send_P(200, "text/html", index_html, processor); });
 
@@ -284,5 +308,35 @@ void loop()
             Serial.println(r);
         }
         waktuSebelum = waktuMillis;
+    }
+
+    unsigned long waktuMillis2 = millis();
+    if (waktuMillis2 - waktuSebelum2 >= interval2)
+    {
+        waktuSebelum2 = waktuMillis2;
+        if (r > -60)
+        {
+            digitalWrite(pinLedM, HIGH);
+        }
+        else
+        {
+            digitalWrite(pinLedM, LOW);
+        }
+        if (r >= -40)
+        {
+            digitalWrite(pinLedK, HIGH);
+        }
+        else
+        {
+            digitalWrite(pinLedK, LOW);
+        }
+        if (r >= -25)
+        {
+            digitalWrite(pinLedH, HIGH);
+        }
+        else
+        {
+            digitalWrite(pinLedH, LOW);
+        }
     }
 }
