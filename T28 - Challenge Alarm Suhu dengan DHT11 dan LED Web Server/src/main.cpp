@@ -17,6 +17,7 @@ const int pinBz = D7;
 int pinLED[] = {pinLedM, pinLedK, pinLedH};
 
 const char *parameter = "batasSuhu";
+const char *parameter2 = "btState";
 
 #define DHTTYPE DHT11
 
@@ -27,6 +28,7 @@ float t = 0.0;
 float h = 0.0;
 int r = 0;
 int b = 0;
+int btState = 0;
 
 unsigned long waktuSebelum = 0;
 const long interval = 5000;
@@ -73,6 +75,64 @@ const char index_html[] PROGMEM = R"rawliteral(
         color: burlywood;
     }
 
+        .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        display: none;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+
 </style>
 
 <body>
@@ -103,9 +163,10 @@ const char index_html[] PROGMEM = R"rawliteral(
         <i class="fas fa-tint" style="color:#00add6;"></i>
         <span class="dht-labels">Kelembapan </span>
         <span id="humidity">%HUMIDITY%</span>
-        <sup class="units">%</sup>
+        <sup class="units">Percent</sup>
     </p>
     <br>
+    %BUTTON%
     <form action="/get">
         <br>
         <b>Setting Alarm Suhu</b>
@@ -113,7 +174,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         <br>
         <input type="text" name="batasSuhu">
         <sup class="units">°C</sup>
-        <input type="submit" value="Submit">
+        <input id="button" type="submit" value="Submit" disabled>
     </form>
     <br>
     <br>
@@ -124,9 +185,11 @@ const char index_html[] PROGMEM = R"rawliteral(
     </footer>
 </body>
 <script>
-    var interval = 10000;
+    var interval = 5000;
     var suhu = 0;
-    var bSuhu = 0;
+    var bSuhu;
+    const btSubmit = document.getElementById("button");
+    const checkbox = document.getElementById("checkbox1");
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -166,11 +229,35 @@ const char index_html[] PROGMEM = R"rawliteral(
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 document.getElementById("alm").innerHTML = this.responseText;
+                bSuhu = parseInt(this.responseText);
             }
         };
         xhttp.open("GET", "/alm", true);
         xhttp.send();
     }, interval);
+
+    setInterval(function () {
+        if (bSuhu != 0) {
+          btSubmit.disabled = false;
+          checkbox.checked = true;
+        } else if (bSuhu == 0) {
+          btSubmit.disabled = true;
+          checkbox.checked = false;
+        }
+    }, interval);
+
+    function tonggleButton() {
+      var xhttp = new XMLHttpRequest();
+        if (checkbox.checked) {
+            btSubmit.disabled = false;
+            xhttp.open("GET","/get?btState=1",true);
+        } else {
+            btSubmit.disabled = true;
+            xhttp.open("GET","/get?btState=0",true);
+            bSuhu = 0;
+        }
+        xhttp.send();
+    }
 
 </script>
 
@@ -195,6 +282,13 @@ String processor(const String &var)
   {
     return String(b);
   }
+  else if (var == "BUTTON")
+  {
+    String tombol = "";
+    tombol += "<h4>Saklar Alarm Suhu</h4><label class=\"switch\"><input id=\"checkbox1\" type=\"checkbox\" onchange=\"tonggleButton()\"><span class=\"slider\"round\"></span></label>";
+    return tombol;
+  }
+
   return String();
 }
 
@@ -247,11 +341,22 @@ void setup()
   server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request)
             {
               String inputMessage;
+              String inputMessage2;
               if (request->hasParam(parameter))
               {
                 inputMessage = request->getParam(parameter)->value();
                 b = atoi(inputMessage.c_str());
+              } else if (request->hasParam(parameter2))
+              {
+                inputMessage2 = request->getParam(parameter2)->value();
+                btState = atoi(inputMessage2.c_str());
+                if (btState == 0)
+                {
+                  b = 0;
+                }
+                
               }
+              
               request->send_P(200, "text/html", index_html, processor); });
 
   server.begin();
