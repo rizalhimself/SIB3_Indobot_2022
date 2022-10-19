@@ -14,6 +14,7 @@ const int pinLedH = D4;
 const int pinLedB = D5;
 const int pinDHT = D6;
 const int pinBz = D7;
+int pinLED[] = {pinLedM, pinLedK, pinLedH};
 
 const char *parameter = "batasSuhu";
 
@@ -93,17 +94,16 @@ const char index_html[] PROGMEM = R"rawliteral(
         <sup class="units">°C</sup>
     </p>
     <p>
+        <i class="fas fa-bell" style="color: #059e8a"></i>
+        <span class="alm-labels">Alarm Suhu </span>
+        <span id="alm">%ALM%</span>
+        <sup class="units">°C</sup>
+    </p>
+    <p>
         <i class="fas fa-tint" style="color:#00add6;"></i>
         <span class="dht-labels">Kelembapan </span>
         <span id="humidity">%HUMIDITY%</span>
         <sup class="units">%</sup>
-    </p>
-    <br>
-    <p>
-        <i class="fas fa-bell"></i>
-        <span class="dht-labels">Alarm Suhu </span>
-        <span id="alm">%ALM%</span>
-        <sup class="units">°C</sup>
     </p>
     <br>
     <form action="/get">
@@ -198,6 +198,19 @@ String processor(const String &var)
   return String();
 }
 
+void loadingLedAnim()
+{
+  for (int k = 0; k < 3; k++)
+  {
+    for (int i = 0; i <= 2; i++)
+    {
+      digitalWrite(pinLED[i], HIGH);
+      delay(400);
+      digitalWrite(pinLED[i], LOW);
+    }
+  }
+}
+
 void setup()
 {
   pinMode(pinLedM, OUTPUT);
@@ -213,7 +226,10 @@ void setup()
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(1000);
-    Serial.println(".");
+    loadingLedAnim();
+    Serial.print("Mengoneksikan ke jaringan ");
+    Serial.print(ssid);
+    Serial.println(" ...");
   }
 
   Serial.println(WiFi.localIP());
@@ -235,7 +251,8 @@ void setup()
               {
                 inputMessage = request->getParam(parameter)->value();
                 b = atoi(inputMessage.c_str());
-              } });
+              }
+              request->send_P(200, "text/html", index_html, processor); });
 
   server.begin();
 }

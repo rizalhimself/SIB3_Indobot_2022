@@ -37,10 +37,6 @@
         color: burlywood;
     }
 
-    form {
-        text-align: center;
-        align-items: center;
-    }
 </style>
 
 <body>
@@ -58,7 +54,13 @@
     <p>
         <i class="fas fa-thermometer-half" style="color:#059e8a;"></i>
         <span class="dht-labels">Suhu </span>
-        <span id="temperature">%TEMPERATURE</span>
+        <span id="temperature">%TEMPERATURE%</span>
+        <sup class="units">°C</sup>
+    </p>
+    <p>
+        <i class="fas fa-bell" style="color: #059e8a"></i>
+        <span class="alm-labels">Alarm Suhu </span>
+        <span id="alm">%ALM%</span>
         <sup class="units">°C</sup>
     </p>
     <p>
@@ -67,14 +69,8 @@
         <span id="humidity">%HUMIDITY%</span>
         <sup class="units">%</sup>
     </p>
-    <p>
-        <i class="fas fa-bell" style="color:#00add6;"></i>
-        <span class="dht-labels">Alarm Suhu </span>
-        <span id="alarm">%ALM%</span>
-        <sup class="units">°C</sup>
-    </p>
     <br>
-    <form action="/GET">
+    <form action="/get">
         <br>
         <b>Setting Alarm Suhu</b>
         <br>
@@ -126,6 +122,7 @@
             }
         };
         xhttp.open("GET", "/humidity", true);
+        xhttp.send();
     }, interval);
 
     setInterval(function () {
@@ -133,13 +130,10 @@
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 document.getElementById("alm").innerHTML = this.responseText;
-                bSuhu = parseInt(this.responseText); 
-                if (suhu >= bSuhu) {
-                    window.alert("Suhu Melebihi Batas!");
-                }
             }
         };
         xhttp.open("GET", "/alm", true);
+        xhttp.send();
     }, interval);
 
 </script>
