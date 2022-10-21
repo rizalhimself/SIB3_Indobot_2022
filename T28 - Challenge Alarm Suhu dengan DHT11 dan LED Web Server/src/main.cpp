@@ -28,7 +28,7 @@ float t = 0.0;
 float h = 0.0;
 int r = 0;
 int b = 0;
-int btState = 0;
+int swState = 0;
 
 unsigned long waktuSebelum = 0;
 const long interval = 5000;
@@ -163,7 +163,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         <i class="fas fa-tint" style="color:#00add6;"></i>
         <span class="dht-labels">Kelembapan </span>
         <span id="humidity">%HUMIDITY%</span>
-        <sup class="units">Percent</sup>
+        <sup class="units">&#x25</sup>
     </p>
     <br>
     %BUTTON%
@@ -349,8 +349,8 @@ void setup()
               } else if (request->hasParam(parameter2))
               {
                 inputMessage2 = request->getParam(parameter2)->value();
-                btState = atoi(inputMessage2.c_str());
-                if (btState == 0)
+                swState = atoi(inputMessage2.c_str());
+                if (swState == 0)
                 {
                   b = 0;
                 }
