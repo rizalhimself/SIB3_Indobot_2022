@@ -17,7 +17,7 @@ const int pinBz = D7;
 int pinLED[] = {pinLedM, pinLedK, pinLedH};
 
 const char *parameter = "batasSuhu";
-const char *parameter2 = "btState";
+const char *parameter2 = "swState";
 
 #define DHTTYPE DHT11
 
@@ -28,7 +28,7 @@ float t = 0.0;
 float h = 0.0;
 int r = 0;
 int b = 0;
-int swState = 0;
+int sSwState = 0;
 
 unsigned long waktuSebelum = 0;
 const long interval = 5000;
@@ -75,7 +75,11 @@ const char index_html[] PROGMEM = R"rawliteral(
         color: burlywood;
     }
 
-        .switch {
+    p.parameter {
+      display: inline;
+    }
+
+    .switch {
         position: relative;
         display: inline-block;
         width: 60px;
@@ -132,6 +136,9 @@ const char index_html[] PROGMEM = R"rawliteral(
         border-radius: 50%;
     }
 
+    div.alertText {
+      color: red;
+    }
 
 </style>
 
@@ -147,26 +154,30 @@ const char index_html[] PROGMEM = R"rawliteral(
     </header>
     <br>
     <br>
-    <p>
+    <p class="parameter">
         <i class="fas fa-thermometer-half" style="color:#059e8a;"></i>
-        <span class="dht-labels">Suhu </span>
+        <span class="dht-labels"><b>Suhu </b></span>
         <span id="temperature">%TEMPERATURE%</span>
         <sup class="units">°C</sup>
+        <span> | </span>
     </p>
-    <p>
-        <i class="fas fa-bell" style="color: #059e8a"></i>
-        <span class="alm-labels">Alarm Suhu </span>
+    <p class="parameter">
+        <i class="fas fa-tint" style="color:#00add6;"></i>
+        <span class="dht-labels"><b>Kelembapan </b></span>
+        <span id="humidity">%HUMIDITY%</span>
+        <sup class="units">&#x25</sup>
+        <span> | </span>
+    </p>
+    <p class="parameter">
+        <i class="fas fa-bell" style="color: red"></i>
+        <span class="alm-labels"><b>Alarm Suhu </b></span>
         <span id="alm">%ALM%</span>
         <sup class="units">°C</sup>
     </p>
-    <p>
-        <i class="fas fa-tint" style="color:#00add6;"></i>
-        <span class="dht-labels">Kelembapan </span>
-        <span id="humidity">%HUMIDITY%</span>
-        <sup class="units">&#x25</sup>
-    </p>
     <br>
-    %BUTTON%
+    <br>
+    <div hidden class="alertText" id="alertText">Sistem Alarm Aktif!</div>
+    %SWITCH%
     <form action="/get">
         <br>
         <b>Setting Alarm Suhu</b>
@@ -190,6 +201,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     var bSuhu;
     const btSubmit = document.getElementById("button");
     const checkbox = document.getElementById("checkbox1");
+    const alertText = document.getElementById("alertText");
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -238,11 +250,13 @@ const char index_html[] PROGMEM = R"rawliteral(
 
     setInterval(function () {
         if (bSuhu != 0) {
+          alertText.hidden = false;
           btSubmit.disabled = false;
           checkbox.checked = true;
         } else if (bSuhu == 0) {
           btSubmit.disabled = true;
           checkbox.checked = false;
+          alertText.hidden = true;
         }
     }, interval);
 
@@ -250,10 +264,10 @@ const char index_html[] PROGMEM = R"rawliteral(
       var xhttp = new XMLHttpRequest();
         if (checkbox.checked) {
             btSubmit.disabled = false;
-            xhttp.open("GET","/get?btState=1",true);
+            xhttp.open("GET","/get?swState=1",true);
         } else {
             btSubmit.disabled = true;
-            xhttp.open("GET","/get?btState=0",true);
+            xhttp.open("GET","/get?swState=0",true);
             bSuhu = 0;
         }
         xhttp.send();
@@ -282,7 +296,7 @@ String processor(const String &var)
   {
     return String(b);
   }
-  else if (var == "BUTTON")
+  else if (var == "SWITCH")
   {
     String tombol = "";
     tombol += "<h4>Saklar Alarm Suhu</h4><label class=\"switch\"><input id=\"checkbox1\" type=\"checkbox\" onchange=\"tonggleButton()\"><span class=\"slider\"round\"></span></label>";
@@ -349,8 +363,8 @@ void setup()
               } else if (request->hasParam(parameter2))
               {
                 inputMessage2 = request->getParam(parameter2)->value();
-                swState = atoi(inputMessage2.c_str());
-                if (swState == 0)
+                sSwState = atoi(inputMessage2.c_str());
+                if (sSwState == 0)
                 {
                   b = 0;
                 }
