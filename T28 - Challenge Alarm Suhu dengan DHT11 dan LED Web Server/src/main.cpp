@@ -34,6 +34,8 @@ unsigned long waktuSebelum = 0;
 const long interval = 5000;
 unsigned long waktuSebelum2 = 0;
 const long interval2 = 1000;
+unsigned long waktuSebelum3 = 0;
+const long interval3 = 1000;
 
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
@@ -390,6 +392,7 @@ void loop()
     else
     {
       r = newR;
+      Serial.print("Sinyal : ");
       Serial.println(r);
     }
 
@@ -401,6 +404,7 @@ void loop()
     else
     {
       t = newT;
+      Serial.print("Suhu : ");
       Serial.println(t);
     }
 
@@ -412,7 +416,16 @@ void loop()
     else
     {
       h = newH;
+      Serial.print("Kelembapan : ");
       Serial.println(h);
+    }
+    if (sSwState == 1)
+    {
+      Serial.println("Switch Alarm Aktif!");
+    }
+    else
+    {
+      Serial.println("Switch Alarm Nonaktif!");
     }
 
     waktuSebelum = waktuMillis;
@@ -445,5 +458,33 @@ void loop()
     {
       digitalWrite(pinLedH, LOW);
     }
+  }
+  unsigned long waktuMillis3 = millis();
+  if (waktuMillis3 - waktuSebelum3 >= interval3)
+  {
+    if (sSwState == 1)
+    {
+      digitalWrite(pinLedB, HIGH);
+      if ((int(t)) >= b)
+      {
+        tone(pinBz, 1000, 500);
+        digitalWrite(pinLedB, LOW);
+        Serial.print("Suhu melewati batas ");
+        Serial.print(t);
+        Serial.print(" dari ");
+        Serial.println(b);
+        Serial.println("Alarm Berbunyi!");
+      }
+      else
+      {
+        noTone(pinBz);
+        digitalWrite(pinLedB, HIGH);
+      }
+    }
+    else
+    {
+      digitalWrite(pinLedB, LOW);
+    }
+    waktuSebelum3 = waktuMillis3;
   }
 }
