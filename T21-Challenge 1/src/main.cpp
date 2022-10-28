@@ -3,7 +3,7 @@
 #define pinLED 26
 
 unsigned long waktuSebelum = 0;
-const long interval = 5000;
+const long interval = 1000;
 int stats = 0;
 
 void setup()
@@ -24,6 +24,7 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   unsigned long waktuSekarang = millis();
+
   if (waktuSekarang - waktuSebelum >= interval)
   {
     Serial.println("Masukkan pilihan anda = ");
@@ -31,25 +32,47 @@ void loop()
     while (Serial.available() == 0)
     {
       // dont do anything but run switch function
+      if (stats == 3)
+      {
+        for (int i = 0; i < 255; i += 5)
+        {
+          analogWrite(pinLED, i);
+          delay(50);
+        }
+
+        for (int i = 255; i > 0; i -= 5)
+        {
+
+          analogWrite(pinLED, i);
+          delay(50);
+        }
+      }
+      else if (stats == 2)
+      {
+        analogWrite(pinLED, 0);
+      }
+      else if (stats == 1)
+      {
+        analogWrite(pinLED, 255);
+      }
     }
 
     int pilihanMenu = Serial.parseInt();
     switch (pilihanMenu)
     {
     case 1:
-      digitalWrite(pinLED, HIGH);
       Serial.println("Lampu LED Menyala");
-      stats = 0;
+      stats = 1;
       break;
 
     case 2:
-      digitalWrite(pinLED, LOW);
+
       Serial.println("Lampu LED Mati");
-      stats = 0;
+      stats = 2;
       break;
 
     case 3:
-      stats = 1;
+      stats = 3;
       Serial.println("Lampu LED Berkedip");
       break;
 
@@ -61,22 +84,5 @@ void loop()
       break;
     }
     waktuSebelum = waktuSekarang;
-  }
-
-  if (stats == 1)
-  {
-    stats = stats;
-    for (int i = 0; i < 255; i += 5)
-    {
-      analogWrite(pinLED, i);
-      delay(5);
-    }
-
-    for (int i = 255; i > 0; i -= 5)
-    {
-
-      analogWrite(pinLED, i);
-      delay(5);
-    }
   }
 }
