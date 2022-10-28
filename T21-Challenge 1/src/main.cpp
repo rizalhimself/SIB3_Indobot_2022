@@ -37,14 +37,14 @@ void loop()
         for (int i = 0; i < 255; i += 5)
         {
           analogWrite(pinLED, i);
-          delay(50);
+          delay(20);
         }
 
         for (int i = 255; i > 0; i -= 5)
         {
 
           analogWrite(pinLED, i);
-          delay(50);
+          delay(20);
         }
       }
       else if (stats == 2)
