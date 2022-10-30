@@ -63,7 +63,7 @@ void loop()
       Serial.println("Masukkan Prosentase Kecerahan = ");
       while (Serial.available() == 0)
       {
-        // dont do anything 
+        // dont do anything
       }
       precentage = Serial.parseInt();
       ledValue = (precentage / 100.0) * 255;
