@@ -18,6 +18,17 @@ void printkurangdarinol(int data)
 
 void setup()
 {
+  Serial.begin(9600);                      // menentukan baudrate di 9600
+  Serial.println("OLED FeatherWing test"); // menampilkan teks ke serial monitor
+
+  // Memastikan OLED dapat berjalan atau tidak
+  if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
+  {
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;)
+      ; // Don't proceed, loop forever
+  }
+
   // text display tests
   display.setTextColor(SSD1306_WHITE);
   display.clearDisplay();
@@ -41,7 +52,7 @@ void loop()
   // menampilkan waktu pada OLED
   display.setTextSize(1);
   display.setCursor(0, 35);
-  display.print("Waktu: ");
+  display.print("Pukul: ");
   display.setTextSize(2);
   display.setCursor(0, 45);
   printkurangdarinol(hour());
