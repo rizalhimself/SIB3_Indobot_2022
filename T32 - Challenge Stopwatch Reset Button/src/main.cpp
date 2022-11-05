@@ -49,6 +49,7 @@ void loop()
     tim = 0;
     mili = 0;
     msec = 0;
+    fase = 1;
     start = 0;
   }
   
