@@ -15,7 +15,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 void setup()
 {
-  pinMode(18, INPUT_PULLUP);                 // deklarasi pin button di D6 wemos
+  pinMode(18, INPUT_PULLUP); // deklarasi pin button di D6 wemos
   pinMode(19, INPUT_PULLUP);
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C); // menginisialisasi alamat OLED di 0x3C (untuk OLED 128x64)
   display.display();                         // digunakan untuk menampilkan isi OLED
@@ -25,7 +25,7 @@ void setup()
   display.setCursor(0, 25);                  // mengatur posisi
   display.println("TASK 32");                // menampilkan teks ke OLED
   display.setCursor(0, 40);                  // mengatur posisi teks
-  display.println("STOPWATCH");                // mengampilkan teks ke OLED
+  display.println("STOPWATCH");              // mengampilkan teks ke OLED
   display.display();                         // menampilkan isi darti OLED
   delay(2000);
 }
@@ -41,7 +41,7 @@ unsigned long tim = 0;  // untuk timer
 
 void loop()
 {
-  display.clearDisplay();   // membersihkan tampilan OLED
+  display.clearDisplay(); // membersihkan tampilan OLED
   if (digitalRead(19) == 0)
   {
     sec1 = 0;
@@ -52,7 +52,7 @@ void loop()
     fase = 1;
     start = 0;
   }
-  
+
   if (digitalRead(18) == 0) // jika tombol tidak ditekan berarti masuk ke tampilan awal
   {
 
