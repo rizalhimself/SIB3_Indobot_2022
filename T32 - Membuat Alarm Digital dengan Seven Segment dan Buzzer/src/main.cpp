@@ -42,7 +42,7 @@ hh = timeClient.getHours(); //Jam
 mm = timeClient.getMinutes(); //Menit
 ss = timeClient.getSeconds(); //Detik
 //Kode untuk mengatur alarm
-if (hh == 9 & mm ==36 & ss == 00){ //jam 23, menit ke 25, detik 00
+if (hh == 5 & mm ==11 & ss == 00){ //jam 23, menit ke 25, detik 00
 digitalWrite(buzzer,HIGH);
 delay(10000);
 digitalWrite(buzzer,LOW);
