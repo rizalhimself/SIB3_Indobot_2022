@@ -4,12 +4,17 @@
 #include <Adafruit_GFX.h>     //pemanggilan library GFX
 #include <Adafruit_SSD1306.h> //pemanggilan library OLED SSD1306
 #include <HCSR04.h>           //Memasukkan library HCSR04
-int Buzzer = D3;              // Membuat variabel Buzzer berisi 3
+int Buzzer = D2;              // Membuat variabel Buzzer berisi 3
 float jarak;                  // Membuat variabel jarak
 UltraSonicDistanceSensor hc(D5, D6);            // Mendefinisikan pin D5 sebagai Trig dan D6 sebagai Echo
 
-Adafruit_SSD1306 display = Adafruit_SSD1306(128, 64, &Wire); // OLED menggunakan kolom 128 pixel dan baris 64 pixel
-#define SCREEN_ADDRESS 0x3C                                  // alamat untuk I2C OLED
+#define SCREEN_WIDTH 128 // lebar OLED dalam pixel
+#define SCREEN_HEIGHT 64 // tinggi OLED dalam pixel
+#define SCREEN_ADDRESS 0x3C // alamat untuk I2C OLED
+#define OLED_RESET 0 // GPIO0
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET); // OLED menggunakan kolom 128 pixel dan baris 64 pixel
+                               
 
 void setup()
 {
@@ -17,13 +22,7 @@ void setup()
   Serial.begin(9600);                      // menentukan baudrate di 9600
   Serial.println("OLED FeatherWing test"); // menampilkan teks ke serial monitor
 
-  // Memastikan OLED dapat berjalan atau tidak
-  if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
-  {
-    Serial.println(F("SSD1306 allocation failed"));
-    for (;;)
-      ; // Don't proceed, loop forever
-  }
+  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS); 
 
   // ujicoba display teks OLED
   display.setTextSize(2);              // ukuran teks
