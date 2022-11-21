@@ -18,7 +18,7 @@ char pass[] = "sinta123";
 BlynkTimer timer;
 
 // create function
-void myTimerEvent()
+void myTimerEvent()Kendali LED, Relay, dan Buzzer
 {
   Blynk.virtualWrite(V0, millis() / 1000);
 }
