@@ -1,3 +1,4 @@
+//blynk parameter
 #define BLYNK_TEMPLATE_ID "TMPLCHOpu0yo"
 #define BLYNK_DEVICE_NAME "Task 37 Praktikum Data Dummy"
 #define BLYNK_AUTH_TOKEN "qCQqg3DObyAvqzMQmo8Xm83xHNjda8WD"
@@ -7,15 +8,13 @@
 #include <WiFi.h>
 #include <BlynkSimpleEsp32.h>
 
-//blynk parameter
-#define BLYNK_PRINT Serial
-
 //wifi parameer
 char auth[] = BLYNK_AUTH_TOKEN;
 char ssid[] = "vivo1820";
 char pass[] = "sinta123";
 
 //create variable
+#define BLYNK_PRINT Serial
 BlynkTimer timer;
 
 //create function
@@ -25,7 +24,7 @@ void myTimerEvent(){
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(115200);
   Blynk.begin(auth, ssid, pass);
   timer.setInterval(1000L, myTimerEvent);
 }
