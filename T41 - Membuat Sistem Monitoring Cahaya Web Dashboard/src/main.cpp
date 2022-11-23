@@ -4,7 +4,7 @@
 //#define BLYNK_DEVICE_NAME           "Device"
 
 #define BLYNK_TEMPLATE_ID "TMPLYcMX5hxS"
-#define BLYNK_DEVICE_NAME "T41 Web Dashboard"
+#define BLYNK_DEVICE_NAME "T42 Web Dashboard"
 
 #define BLYNK_FIRMWARE_VERSION "0.1.0"
 
