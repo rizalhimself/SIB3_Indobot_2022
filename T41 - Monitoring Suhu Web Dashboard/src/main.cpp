@@ -3,7 +3,7 @@
 //#define BLYNK_TEMPLATE_ID           "TMPxxxxxxx"
 //#define BLYNK_DEVICE_NAME           "Device"
 #define BLYNK_TEMPLATE_ID "TMPLCNbVqEoF"
-#define BLYNK_DEVICE_NAME "T41 Monitor Suhu"
+#define BLYNK_DEVICE_NAME "T42 Monitor Suhu"
 
 #define BLYNK_FIRMWARE_VERSION "0.1.0"
 
