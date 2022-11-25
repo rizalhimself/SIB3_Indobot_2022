@@ -3,9 +3,9 @@
 //#define BLYNK_TEMPLATE_ID           "TMPxxxxxxx"
 //#define BLYNK_DEVICE_NAME           "Device"
 #define BLYNK_TEMPLATE_ID "TMPL-Yuk1grF"
-#define BLYNK_DEVICE_NAME "43 OTA BLINK"
+#define BLYNK_DEVICE_NAME "43 OTA"
 
-#define BLYNK_FIRMWARE_VERSION "0.1.1"
+#define BLYNK_FIRMWARE_VERSION "0.1.2"
 
 #define BLYNK_PRINT Serial
 //#define BLYNK_DEBUG
@@ -21,23 +21,19 @@
 #include "BlynkEdgent.h"
 #define pinLed D7
 
-BlynkTimer timer;
-int st;
+int pinVal;
 
-void ledBlink()
-{
-  if (st == 0)
+BLYNK_WRITE(V0){
+  pinVal = param.asInt();
+  if (pinVal == 1)
   {
-    digitalWrite(pinLed, HIGH);
-    st = 1;
-    Serial.println(st);
+    digitalWrite(pinLed, pinVal);
   }
   else
   {
-    digitalWrite(pinLed, LOW);
-    st = 0;
-    Serial.println(st);
+    digitalWrite(pinLed, pinVal);
   }
+  
 }
 
 void setup()
@@ -47,11 +43,9 @@ void setup()
   delay(100);
 
   BlynkEdgent.begin();
-  timer.setInterval(500L, ledBlink);
 }
 
 void loop()
 {
   BlynkEdgent.run();
-  timer.run();
 }
