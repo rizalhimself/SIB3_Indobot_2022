@@ -50,8 +50,10 @@ void sendSensorData()
   sensorReading = analogRead(pinFS);
   range = map(sensorReading, sensorMin, sensorMax, 0, 3);
   Serial.print("% Nilai Baca Sensor: ");
+  delay(250);
   Serial.println(sensorReading);
   Serial.print("% Nilai Range: ");
+  delay(250);
   Serial.println(range);
   switch (range)
   {
@@ -67,10 +69,16 @@ void sendSensorData()
     Serial.print(2);
     Serial.println(" | Api Kurang Dari 3 Meter");
     break;
-  case 2: // No fire detected.
+  case 2: // Red spot detected.
     Blynk.virtualWrite(vPinDataIRSensor, "1");
     Serial.print("% Nilai: ");
     Serial.print(1);
+    Serial.println(" | Spot Merah Terdeteksi");
+    break;
+  case 3: // No fire detected.
+    Blynk.virtualWrite(vPinDataIRSensor, "0");
+    Serial.print("% Nilai: ");
+    Serial.print(0);
     Serial.println(" | Tidak Ada Api Terdeteksi");
     break;
   }
